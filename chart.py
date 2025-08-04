@@ -15,10 +15,11 @@ def chart():
         if not labels or not values:
             return jsonify({"error": "Missing labels or values"}), 400
 
-        # ✅ Setup chart with black background
-        plt.figure(figsize=(10, 5), facecolor='black')
+        # ✅ Setup chart with off-white background
+        off_white = '#f4f4f4'
+        plt.figure(figsize=(10, 5), facecolor=off_white)
         ax = plt.gca()
-        ax.set_facecolor('black')  # chart area background
+        ax.set_facecolor(off_white)  # chart area background
 
         # ✅ Plot bars
         bars = plt.bar(labels, values, color='skyblue')
@@ -26,18 +27,22 @@ def chart():
         # ✅ Add quantity labels on top of each bar
         for bar, value in zip(bars, values):
             plt.text(bar.get_x() + bar.get_width()/2, bar.get_height(), str(value),
-                     ha='center', va='bottom', color='white', fontsize=10)
+                     ha='center', va='bottom', color='black', fontsize=10)
 
-        # ✅ Clean look: remove chart title
-        plt.xlabel("LOB", color='white')
-        plt.ylabel("Quantity", color='white')
-        plt.xticks(rotation=45, color='white')
-        plt.yticks(color='white')
+        # ✅ Add gridlines (auto)
+        ax.yaxis.grid(True, linestyle='--', color='gray', alpha=0.6)
+        ax.xaxis.grid(False)
 
-        # ✅ Save to image
+        # ✅ Chart labels and ticks
+        plt.xlabel("LOB", color='black')
+        plt.ylabel("Quantity", color='black')
+        plt.xticks(rotation=45, color='black')
+        plt.yticks(color='black')
+
+        # ✅ Save chart to image buffer
         buf = io.BytesIO()
         plt.tight_layout()
-        plt.savefig(buf, format="png", facecolor='black')  # also save with black bg
+        plt.savefig(buf, format="png", facecolor=off_white)
         buf.seek(0)
         encoded_image = base64.b64encode(buf.read()).decode('utf-8')
         buf.close()
